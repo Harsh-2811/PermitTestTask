@@ -1,9 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Enum
-from sqlalchemy.ext.declarative import declarative_base
+from app.database import Base
 import enum
 import datetime
-
-Base = declarative_base()
 
 class PermitStatus(str, enum.Enum):
     pending = "pending"

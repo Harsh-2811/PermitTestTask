@@ -7,5 +7,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+@app.get("/heath_check")
+def read_root():
+    return {"message": "Welcome to the Permit Management API"}
+
+
 # Include permit routes
 app.include_router(router, prefix="/permits", tags=["permits"])
