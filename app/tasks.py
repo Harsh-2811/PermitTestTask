@@ -1,11 +1,15 @@
-from celery import Celery
+from worker.celery_worker import celery_app
+import logging
+
 from app.database import SessionLocal
 from app.crud import PermitCRUD
 
-celery = Celery(__name__, broker="redis://redis:6379/0")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-@celery.task
-def expire_pending_permits():
+
+@celery_app.task(bind=True)
+def expire_pending_permits(self):
     db = SessionLocal()
-    PermitCRUD().expire_old_permits(db)
+    PermitCRUD(db).expire_old_permits()
     db.close()
