@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    volumes:
+      - db-data:/app/db
+
+  redis:
+    image: redis:alpine
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A app.tasks worker --loglevel=info
+    depends_on:
+      - redis
+
+  beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A app.tasks beat --loglevel=info
+    depends_on:
+      - redis
+
+volumes:
+  db-data:
